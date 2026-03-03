@@ -1,0 +1,21 @@
+# Exclude large/binary files
+media/
+logs/
+completions/
+canvas/
+*.bak*
+*.tmp
+*.tmp.*
+
+# Exclude device-specific temporary files
+devices/*.tmp
+
+# Exclude sensitive runtime data (backed up separately)
+openclaw.json.bak*
+
+# Node modules if any
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
