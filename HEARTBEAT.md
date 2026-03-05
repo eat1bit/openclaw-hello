@@ -1,5 +1,45 @@
-# HEARTBEAT.md
+# AI 学习每日推送任务
 
-# Keep this file empty (or with only comments) to skip heartbeat API calls.
+**任务：** 每天早上推送当天的 AI 学习内容
 
-# Add tasks below when you want the agent to check something periodically.
+**开始日期：** 2026-03-06
+**周期：** 160 天
+
+**推送时间：** 每天早上 8:00
+
+**推送内容格式：**
+```
+📚 AI 学习第 X 天 / 共 160 天
+━━━━━━━━━━━━━━━━
+📅 今日内容：
+[具体内容]
+
+📺 推荐资源：
+[链接]
+
+💻 实践任务：
+[任务]
+
+⏱️ 预计时间：1h（工作日）/ 4h（周末）
+━━━━━━━━━━━━━━━━
+💪 坚持就是胜利！
+```
+
+**学习计划文件：** `/root/.openclaw/workspace/ai-learning-plan.md`
+
+---
+
+## 检查清单
+
+- [x] 学习计划已创建
+- [x] 推送脚本已创建
+- [x] cron 已设置
+- [ ] 每天检查推送状态
+
+---
+
+**学员情况：**
+- 9 年 Java+ 大数据经验
+- 每天 1h + 周末 4h
+- 目标：AI 工程师
+- 不查看完整计划（避免焦虑）
