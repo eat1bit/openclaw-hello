@@ -1,0 +1,18 @@
+{
+  "lastChecks": {
+    "heartbeat": 1741244940,
+    "aiLearningPush": null
+  },
+  "aiLearningPlan": {
+    "startDate": "2026-03-06",
+    "totalDays": 160,
+    "currentDay": 1,
+    "lastPushDate": "2026-03-06",
+    "status": "active"
+  },
+  "cronStatus": {
+    "configured": true,
+    "schedule": "0 8 * * *",
+    "script": "/root/.openclaw/workspace/ai-learning-daily-push.sh"
+  }
+}
