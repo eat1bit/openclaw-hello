@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 学习题库 - 在线答题</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .progress-bar {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .progress-text {
+            color: white;
+            font-weight: bold;
+        }
+        
+        .progress-fill {
+            background: #4ade80;
+            height: 10px;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+            flex: 1;
+            margin: 0 15px;
+        }
+        
+        .question-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .question-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .question-category {
+            background: #f3f4f6;
+            color: #6b7280;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+        }
+        
+        .question-text {
+            font-size: 1.2em;
+            color: #1f2937;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .options {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .option {
+            padding: 15px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            font-size: 1em;
+        }
+        
+        .option:hover {
+            border-color: #667eea;
+            background: #f9fafb;
+        }
+        
+        .option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .option.correct {
+            border-color: #4ade80;
+            background: #dcfce7;
+        }
+        
+        .option.incorrect {
+            border-color: #f87171;
+            background: #fee2e2;
+        }
+        
+        .option-letter {
+            font-weight: bold;
+            margin-right: 12px;
+            min-width: 30px;
+        }
+        
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .explanation-title {
+            font-weight: bold;
+            color: #0369a1;
+            margin-bottom: 8px;
+        }
+        
+        .explanation-text {
+            color: #0c4a6e;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            margin-left: 10px;
+        }
+        
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+        }
+        
+        .result-card.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 3em;
+            font-weight: bold;
+        }
+        
+        .score-circle.excellent {
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+        }
+        
+        .score-circle.good {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+        
+        .score-circle.need-improve {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+        }
+        
+        .result-title {
+            font-size: 1.8em;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+        
+        .result-text {
+            color: #6b7280;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .category-filter {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9em;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: white;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 AI 学习题库</h1>
+            <p>20 道精选题目，检验你的学习成果</p>
+        </header>
+        
+        <div class="category-filter" id="categoryFilter">
+            <button class="filter-btn active" data-category="all">全部</button>
+            <button class="filter-btn" data-category="python-basic">Python 基础</button>
+            <button class="filter-btn" data-category="ml-basic">机器学习</button>
+            <button class="filter-btn" data-category="data-processing">数据处理</button>
+            <button class="filter-btn" data-category="model-eval">模型评估</button>
+            <button class="filter-btn" data-category="python-practice">Python 实战</button>
+        </div>
+        
+        <div class="progress-bar">
+            <span class="progress-text">进度：<span id="currentNum">1</span>/20</span>
+            <div class="progress-fill" id="progressFill" style="width: 5%"></div>
+            <span class="progress-text">得分：<span id="scoreNum">0</span></span>
+        </div>
+        
+        <div id="quizContainer">
+            <!-- 题目会动态加载 -->
+        </div>
+        
+        <div class="result-card" id="resultCard">
+            <div class="score-circle" id="scoreCircle">0%</div>
+            <h2 class="result-title" id="resultTitle">完成答题！</h2>
+            <p class="result-text" id="resultText">继续加油！</p>
+            <button class="btn" onclick="restartQuiz()">重新开始</button>
+            <button class="btn btn-secondary" onclick="reviewWrong()">查看错题</button>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>下一题</button>
+            <button class="btn btn-secondary" id="submitBtn" onclick="showResult()">提交试卷</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                category: "python-basic",
+                categoryText: "Python 基础",
+                number: 1,
+                text: "Python 中定义变量时，不需要声明什么？",
+                options: ["A. 变量名", "B. 数据类型", "C. 初始值", "D. 作用域"],
+                answer: "B",
+                explanation: "Python 是动态类型语言，变量不需要声明类型，赋值时自动推断。"
+            },
+            {
+                category: "python-basic",
+                categoryText: "Python 基础",
+                number: 2,
+                text: "以下哪个是 Python 的正确赋值语法？",
+                options: ["A. var x = 5", "B. int x = 5", "C. x = 5", "D. let x = 5"],
+                answer: "C",
+                explanation: "Python 直接赋值，不需要类型声明或关键字。"
+            },
+            {
+                category: "python-basic",
+                categoryText: "Python 基础",
+                number: 3,
+                text: "Python 中输出内容用什么函数？",
+                options: ["A. console.log()", "B. print()", "C. echo", "D. System.out.println()"],
+                answer: "B",
+                explanation: "Python 用 print() 函数输出，console.log 是 JavaScript 的。"
+            },
+            {
+                category: "python-basic",
+                categoryText: "Python 基础",
+                number: 4,
+                text: "Python 中条件判断用什么关键字？",
+                options: ["A. when", "B. if", "C. case", "D. switch"],
+                answer: "B",
+                explanation: "Python 用 if/elif/else 进行条件判断，没有 switch-case。"
+            },
+            {
+                category: "python-basic",
+                categoryText: "Python 基础",
+                number: 5,
+                text: "以下哪个是正确的 if 语句语法？",
+                options: ["A. if (x > 5)", "B. if x > 5 then", "C. if x > 5:", "D. if x > 5 {}"],
+                answer: "C",
+                explanation: "Python 的 if 语句用冒号结尾，不用括号和花括号。"
+            },
+            {
+                category: "python-basic",
+                categoryText: "Python 基础",
+                number: 6,
+                text: "Python 中等号比较用？",
+                options: ["A. =", "B. ==", "C. ===", "D. equals"],
+                answer: "B",
+                explanation: "= 是赋值，== 是比较，Python 没有===。"
+            },
+            {
+                category: "python-basic",
+                categoryText: "Python 基础",
+                number: 7,
+                text: "Python 中定义函数用什么关键字？",
+                options: ["A. function", "B. def", "C. func", "D. define"],
+                answer: "B",
+                explanation: "Python 用 def 关键字定义函数。"
+            },
+            {
+                category: "python-basic",
+                categoryText: "Python 基础",
+                number: 8,
+                text: "函数参数默认值在哪里指定？",
+                options: ["A. 函数定义时", "B. 函数体内", "C. 返回值后", "D. 不能指定"],
+                answer: "A",
+                explanation: "Python 可以在定义函数时指定参数默认值。"
+            },
+            {
+                category: "python-basic",
+                categoryText: "Python 基础",
+                number: 9,
+                text: "导入模块用什么关键字？",
+                options: ["A. include", "B. require", "C. import", "D. using"],
+                answer: "C",
+                explanation: "Python 用 import 导入模块，include 是 C 语言的。"
+            },
+            {
+                category: "ml-basic",
+                categoryText: "机器学习",
+                number: 10,
+                text: "线性回归用于什么类型的问题？",
+                options: ["A. 分类", "B. 回归", "C. 聚类", "D. 降维"],
+                answer: "B",
+                explanation: "线性回归用于预测连续值的回归问题。"
+            },
+            {
+                category: "ml-basic",
+                categoryText: "机器学习",
+                number: 11,
+                text: "过拟合是指模型在什么上表现好？",
+                options: ["A. 训练集", "B. 测试集", "C. 验证集", "D. 新数据"],
+                answer: "A",
+                explanation: "过拟合是模型在训练集上表现太好，泛化能力差。"
+            },
+            {
+                category: "ml-basic",
+                categoryText: "机器学习",
+                number: 12,
+                text: "哪个不是机器学习算法？",
+                options: ["A. 决策树", "B. SVM", "C. Python", "D. KMeans"],
+                answer: "C",
+                explanation: "Python 是编程语言，不是算法。"
+            },
+            {
+                category: "ml-basic",
+                categoryText: "机器学习",
+                number: 13,
+                text: "训练集和测试集的常见划分比例是？",
+                options: ["A. 50% : 50%", "B. 80% : 20%", "C. 10% : 90%", "D. 99% : 1%"],
+                answer: "B",
+                explanation: "通常 80% 数据用于训练，20% 用于测试，保证模型有足够数据学习且有独立数据验证。"
+            },
+            {
+                category: "ml-basic",
+                categoryText: "机器学习",
+                number: 14,
+                text: "特征工程的主要目的是？",
+                options: ["A. 增加数据量", "B. 提高模型性能", "C. 减少计算时间", "D. 简化代码"],
+                answer: "B",
+                explanation: "特征工程通过选择、转换特征来提高模型预测性能。"
+            },
+            {
+                category: "data-processing",
+                categoryText: "数据处理",
+                number: 15,
+                text: "pandas 中读取 CSV 文件用什么函数？",
+                options: ["A. read_excel()", "B. read_csv()", "C. load_csv()", "D. import_csv()"],
+                answer: "B",
+                explanation: "pandas 用 pd.read_csv() 读取 CSV 文件。"
+            },
+            {
+                category: "data-processing",
+                categoryText: "数据处理",
+                number: 16,
+                text: "numpy 数组和 Python 列表的主要区别是？",
+                options: ["A. 数组只能存数字", "B. 数组更高效", "C. 列表不能切片", "D. 没有区别"],
+                answer: "B",
+                explanation: "numpy 数组针对数值计算优化，支持向量化操作，效率更高。"
+            },
+            {
+                category: "data-processing",
+                categoryText: "数据处理",
+                number: 17,
+                text: "数据标准化的主要作用是？",
+                options: ["A. 让数据范围统一", "B. 增加数据量", "C. 删除异常值", "D. 转换数据类型"],
+                answer: "A",
+                explanation: "标准化将不同量纲的特征转换到同一尺度，避免某些特征主导模型。"
+            },
+            {
+                category: "model-eval",
+                categoryText: "模型评估",
+                number: 18,
+                text: "分类问题最常用的评估指标是？",
+                options: ["A. 均方误差", "B. 准确率", "C. R²分数", "D. 平均绝对误差"],
+                answer: "B",
+                explanation: "准确率是分类问题最直观的评估指标，表示预测正确的比例。"
+            },
+            {
+                category: "model-eval",
+                categoryText: "模型评估",
+                number: 19,
+                text: "混淆矩阵中 TP 表示什么？",
+                options: ["A. 真阳性", "B. 假阳性", "C. 真阴性", "D. 假阴性"],
+                answer: "A",
+                explanation: "TP (True Positive) 表示实际为正例且预测也为正例的数量。"
+            },
+            {
+                category: "model-eval",
+                categoryText: "模型评估",
+                number: 20,
+                text: "防止过拟合的常用方法是？",
+                options: ["A. 增加训练轮数", "B. 使用正则化", "C. 减少训练数据", "D. 增加模型复杂度"],
+                answer: "B",
+                explanation: "正则化 (L1/L2) 通过惩罚大权重来防止过拟合，Dropout 也是常用方法。"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+        let filteredQuestions = questions;
+        let answeredQuestions = new Set();
+
+        function init() {
+            loadQuestion(0);
+            updateProgress();
+        }
+
+        function loadQuestion(index) {
+            const container = document.getElementById('quizContainer');
+            const q = filteredQuestions[index];
+            
+            container.innerHTML = `
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-number">第 ${q.number} 题</span>
+                        <span class="question-category">${q.categoryText}</span>
+                    </div>
+                    <div class="question-text">${q.text}</div>
+                    <div class="options">
+                        ${q.options.map((opt, i) => `
+                            <div class="option" onclick="selectOption(${i}, '${opt.charAt(0)}')">
+                                <span class="option-letter">${opt.charAt(0)}.</span>
+                                <span>${opt.substring(3)}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="explanation">
+                        <div class="explanation-title">💡 解析</div>
+                        <div class="explanation-text">${q.explanation}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('currentNum').textContent = index + 1;
+            document.getElementById('nextBtn').disabled = true;
+        }
+
+        function selectOption(optionIndex, answer) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[optionIndex].classList.add('selected');
+            
+            userAnswers[currentQuestion] = answer;
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            const q = filteredQuestions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            
+            // 显示正确答案
+            options.forEach((opt, i) => {
+                const optLetter = q.options[i].charAt(0);
+                if (optLetter === q.answer) {
+                    opt.classList.add('correct');
+                } else if (optLetter === userAnswers[currentQuestion] && optLetter !== q.answer) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            // 显示解析
+            document.getElementById('explanation').classList.add('show');
+            
+            // 计分
+            if (userAnswers[currentQuestion] === q.answer && !answeredQuestions.has(currentQuestion)) {
+                score++;
+                answeredQuestions.add(currentQuestion);
+                updateProgress();
+            }
+            
+            // 延迟后切换到下一题
+            setTimeout(() => {
+                if (currentQuestion < filteredQuestions.length - 1) {
+                    currentQuestion++;
+                    loadQuestion(currentQuestion);
+                } else {
+                    document.getElementById('nextBtn').style.display = 'none';
+                    document.getElementById('submitBtn').textContent = '查看结果';
+                }
+            }, 2000);
+        }
+
+        function updateProgress() {
+            const percentage = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('scoreNum').textContent = score;
+        }
+
+        function showResult() {
+            const percentage = Math.round((score / questions.length) * 100);
+            const circle = document.getElementById('scoreCircle');
+            const title = document.getElementById('resultTitle');
+            const text = document.getElementById('resultText');
+            
+            circle.textContent = percentage + '%';
+            circle.className = 'score-circle';
+            
+            if (percentage >= 80) {
+                circle.classList.add('excellent');
+                title.textContent = '🎉 太棒了！';
+                text.textContent = '你对 AI 知识掌握得很好，继续保持！';
+            } else if (percentage >= 60) {
+                circle.classList.add('good');
+                title.textContent = '👍 不错哦！';
+                text.textContent = '已经掌握大部分知识，再复习一下会更好！';
+            } else {
+                circle.classList.add('need-improve');
+                title.textContent = '💪 继续加油！';
+                text.textContent = '多练习几次，你一定能行！';
+            }
+            
+            document.getElementById('quizContainer').style.display = 'none';
+            document.getElementById('resultCard').classList.add('show');
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            answeredQuestions = new Set();
+            filteredQuestions = questions;
+            
+            document.getElementById('quizContainer').style.display = 'block';
+            document.getElementById('resultCard').classList.remove('show');
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').textContent = '提交试卷';
+            
+            loadQuestion(0);
+            updateProgress();
+        }
+
+        function reviewWrong() {
+            const wrongQuestions = questions.filter((q, i) => userAnswers[i] !== q.answer);
+            if (wrongQuestions.length === 0) {
+                alert('太棒了！你没有错题！');
+                return;
+            }
+            filteredQuestions = wrongQuestions;
+            currentQuestion = 0;
+            document.getElementById('resultCard').classList.remove('show');
+            document.getElementById('quizContainer').style.display = 'block';
+            loadQuestion(0);
+        }
+
+        // 分类筛选
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const category = this.dataset.category;
+                if (category === 'all') {
+                    filteredQuestions = questions;
+                } else {
+                    filteredQuestions = questions.filter(q => q.category === category);
+                }
+                
+                currentQuestion = 0;
+                score = 0;
+                userAnswers = [];
+                answeredQuestions = new Set();
+                
+                loadQuestion(0);
+                updateProgress();
+            });
+        });
+
+        // 初始化
+        init();
+    </script>
+</body>
+</html>
