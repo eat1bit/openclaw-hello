@@ -1,13 +1,14 @@
 {
   "lastChecks": {
-    "heartbeat": 1741449000,
-    "aiLearningPush": 1741449600
+    "heartbeat": 1741464060,
+    "aiLearningPush": 1741464060
   },
   "aiLearningPlan": {
     "startDate": "2026-03-06",
     "totalDays": 160,
-    "currentDay": 3,
-    "lastPushDate": "2026-03-08",
+    "currentDay": 4,
+    "lastPushDate": "2026-03-09",
+    "nextPushDate": "2026-03-10",
     "status": "active"
   },
   "cronStatus": {
