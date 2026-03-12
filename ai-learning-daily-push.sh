@@ -214,5 +214,8 @@ $QUIZ
 ━━━━━━━━━━━━━━━━
 💪 坚持就是胜利！"
 
-# 输出消息
+# 输出消息（供 cron 管道使用）
 echo "$MESSAGE"
+
+# 直接推送（备用方案，当 cron 管道失败时使用）
+# openclaw message send --channel feishu --message "$MESSAGE"
