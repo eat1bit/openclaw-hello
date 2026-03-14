@@ -1,26 +1,21 @@
 {
   "lastChecks": {
-    "heartbeat": 1741845060,
-    "aiLearningPush": 1741845060
+    "heartbeat": 1742016840,
+    "aiLearningPush": 1741986240
   },
   "aiLearningPlan": {
     "startDate": "2026-03-06",
     "totalDays": 160,
-    "currentDay": 7,
-    "lastPushDate": "2026-03-12",
-    "nextPushDate": "2026-03-13",
+    "currentDay": 9,
+    "lastPushDate": "2026-03-14",
+    "nextPushDate": "2026-03-15",
     "status": "active"
   },
   "cronStatus": {
     "configured": true,
     "schedule": "0 8 * * *",
     "script": "/root/.openclaw/workspace/ai-learning-daily-push.sh",
-    "lastRunStatus": "fixed_account_and_target",
-    "fixedAt": "2026-03-12T11:55:00+08:00",
-    "fixes": [
-      "Added --account main flag",
-      "Added --target chat:oc_fb08976d0976a17ae48e68ce16b94545",
-      "Ran openclaw doctor --fix for feishu config"
-    ]
+    "lastRunStatus": "success",
+    "lastPushAt": "2026-03-14T08:04:00+08:00"
   }
 }
